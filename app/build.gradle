@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.example.az.mysocialdemo"
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    
+        manifestPlaceholders = [qqappid: "3103507692"]
+    }
+    
+    /**
+     * 签名设置
+     */
+    signingConfigs {
+        myConfigs {
+            storeFile file("../keystore.jks")
+            storePassword "123456"
+            keyAlias "wp"
+            keyPassword "123456"
+        }
+    }
+    
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //签名
+            signingConfig signingConfigs.myConfigs
+        }
+        debug {
+            //签名
+            signingConfig signingConfigs.myConfigs
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    
+    configurations.all {
+        resolutionStrategy.force 'com.android.support:support-annotations:26.1.0'
+    }
+    
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    
+    //umeng
+    compile 'com.umeng.sdk:share-core:latest.integration'
+    compile 'com.umeng.sdk:share-qq:latest.integration'
+    compile 'com.umeng.sdk:share-wechat:latest.integration'
+    compile 'com.umeng.sdk:share-sina:latest.integration'
+    compile 'com.umeng.sdk:common:latest.integration'
+    //如果使用了分享面板，需要添加
+    compile 'com.umeng.sdk:shareboard-widget:latest.integration'
+    //umeng
+}
