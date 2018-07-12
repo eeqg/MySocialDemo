@@ -25,20 +25,22 @@ import java.util.Map;
 
 public class SocialUtils {
 	
-	public static void shareWithPlatform(Activity activity, String shareUrl, String shareTitle, String shareContent, String sharePictureUrl, SHARE_MEDIA shareMedia, SocialUtils.OnShareListener onShareListener){
+	private static final String TAG = "SocialUtils";
+	
+	public static void shareWithPlatform(Activity activity, String shareUrl, String shareTitle, String shareContent, String sharePictureUrl, SHARE_MEDIA shareMedia, SocialUtils.OnShareListener onShareListener) {
 		UMWeb umWeb = new UMWeb(shareUrl);
 		umWeb.setTitle(shareTitle);
 		umWeb.setDescription(shareContent);
-		if(!TextUtils.isEmpty(sharePictureUrl)) {
+		if (!TextUtils.isEmpty(sharePictureUrl)) {
 			umWeb.setThumb(new UMImage(activity, sharePictureUrl));
 		}
 		(new ShareAction(activity)).setPlatform(shareMedia).withMedia(umWeb).setCallback(createShareListener(onShareListener)).share();
 	}
 	
 	public static void shareBottom(final Activity activity,
-	                         final String shareUrl, final String shareTitle, final String shareContent,
-	                         final String sharePictureUrl,
-	                         final SocialUtils.OnShareListener onShareListener) {
+	                               final String shareUrl, final String shareTitle, final String shareContent,
+	                               final String sharePictureUrl,
+	                               final SocialUtils.OnShareListener onShareListener) {
 		new ShareAction(activity).setDisplayList(
 				SHARE_MEDIA.WEIXIN, SHARE_MEDIA.WEIXIN_CIRCLE,
 				SHARE_MEDIA.SINA, SHARE_MEDIA.QQ, SHARE_MEDIA.QZONE)
@@ -172,6 +174,26 @@ public class SocialUtils {
 					
 					@Override
 					public void onComplete(SHARE_MEDIA shareMedia, int i, Map<String, String> map) {
+						//sdk是6.4.5的,但是获取值的时候用的是6.2以前的(access_token)才能获取到值,未知原因
+						String uid = map.get("uid");
+						String openid = map.get("openid");//微博没有
+						String unionid = map.get("unionid");//微博没有
+						String access_token = map.get("access_token");
+						String refresh_token = map.get("refresh_token");//微信,qq,微博都没有获取到
+						String expires_in = map.get("expires_in");
+						String name = map.get("name");//名称
+						String gender = map.get("gender");//性别
+						String iconurl = map.get("iconurl");//头像地址
+						
+						LogUtils.e(TAG, "onStart授权完成: " + openid);
+						LogUtils.e(TAG, "onStart授权完成: " + unionid);
+						LogUtils.e(TAG, "onStart授权完成: " + access_token);
+						LogUtils.e(TAG, "onStart授权完成: " + refresh_token);
+						LogUtils.e(TAG, "onStart授权完成: " + expires_in);
+						LogUtils.e(TAG, "onStart授权完成: " + uid);
+						LogUtils.e(TAG, "onStart授权完成: " + name);
+						LogUtils.e(TAG, "onStart授权完成: " + gender);
+						LogUtils.e(TAG, "onStart授权完成: " + iconurl);
 					}
 					
 					@Override
