@@ -3,16 +3,27 @@ package com.example.az.mysocialdemo.utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.az.mysocialdemo.R;
 import com.umeng.socialize.UMShareAPI;
 import com.umeng.socialize.bean.SHARE_MEDIA;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShareDialog extends Dialog {
 	private boolean showWechat;
@@ -38,6 +49,33 @@ public class ShareDialog extends Dialog {
 		return shareDialog;
 	}
 	
+	public static ShareDialog showMultiImageShare(Activity activity, ArrayList<String> imageList) {
+		ShareDialog shareDialog = new ShareDialog(activity);
+		shareDialog.setOwnerActivity(activity);
+		shareDialog.cacheImage(imageList);
+		// shareDialog.show();
+		return shareDialog;
+	}
+	
+	private void cacheImage(ArrayList<String> imageList) {
+		//缓存图片到本地
+		PosterXQImgCache.getInstance().removeImgCache();//清空缓存历史
+		for (int i = 0; i < imageList.size(); i++) {
+			final int finalI = i;
+			Glide.with(getContext()).load(imageList.get(i)).into(new SimpleTarget<Drawable>() {
+				@Override
+				public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+					ImgFileUtils.saveBitmap(getContext(), ImageUtils.drawableToBitmap(resource), "test" + finalI);
+				}
+				
+				@Override
+				public void onLoadFailed(@Nullable Drawable errorDrawable) {
+					super.onLoadFailed(errorDrawable);
+				}
+			});
+		}
+	}
+	
 	private ShareDialog(Context context) {
 		super(context, R.style.DialogTransparentTheme_Bottom);
 	}
@@ -50,7 +88,7 @@ public class ShareDialog extends Dialog {
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.rootView = getLayoutInflater().inflate(R.layout.share_view, (ViewGroup) null, false);
+		this.rootView = getLayoutInflater().inflate(R.layout.share_dialog, (ViewGroup) null, false);
 		this.setContentView(rootView);
 		// this.dataBinding.setShowWechat(this.showWechat);
 		this.observeWechat();
@@ -69,10 +107,19 @@ public class ShareDialog extends Dialog {
 		// 		ShareDialog.this.share(SHARE_MEDIA.WEIXIN);
 		// 	}
 		// });
-		this.rootView.findViewById(R.id.ivWeChat).setOnClickListener(new View.OnClickListener() {
+		this.rootView.findViewById(R.id.llWechat).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-			
+				List<String> imgCache = PosterXQImgCache.getInstance().getImgCache();
+				Uri[] uris = new Uri[imgCache.size()];//创建用于存放图片的Uri数组
+				//循环缓存路径分别生成文件，添加到图片Uri数组中
+				for (int i = 0; i < imgCache.size(); i++) {
+					LogUtils.d("-----" + imgCache.get(i));
+					uris[i] = Uri.fromFile(new File(imgCache.get(i)));
+				}
+				new ShareUtils(getContext()).shareWXSomeImg(getContext(), uris);
+				
+				dismiss();
 			}
 		});
 	}
@@ -83,10 +130,19 @@ public class ShareDialog extends Dialog {
 		// 		ShareDialog.this.share(SHARE_MEDIA.WEIXIN_CIRCLE);
 		// 	}
 		// });
-		this.rootView.findViewById(R.id.ivWxCircle).setOnClickListener(new View.OnClickListener() {
+		this.rootView.findViewById(R.id.llMoment).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-			
+				List<String> imgCache = PosterXQImgCache.getInstance().getImgCache();
+				Uri[] uris = new Uri[imgCache.size()];//创建用于存放图片的Uri数组
+				//循环缓存路径分别生成文件，添加到图片Uri数组中
+				for (int i = 0; i < imgCache.size(); i++) {
+					LogUtils.d("-----" + imgCache.get(i));
+					uris[i] = Uri.fromFile(new File(imgCache.get(i)));
+				}
+				new ShareUtils(getContext()).shareweipyqSomeImg(getContext(), uris);
+				
+				dismiss();
 			}
 		});
 	}

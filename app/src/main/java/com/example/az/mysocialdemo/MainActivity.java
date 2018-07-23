@@ -20,11 +20,13 @@ import com.example.az.mysocialdemo.utils.ImageUtils;
 import com.example.az.mysocialdemo.utils.ImgFileUtils;
 import com.example.az.mysocialdemo.utils.LogUtils;
 import com.example.az.mysocialdemo.utils.PosterXQImgCache;
+import com.example.az.mysocialdemo.utils.ShareDialog;
 import com.example.az.mysocialdemo.utils.ShareUtils;
 import com.example.az.mysocialdemo.utils.SocialUtils;
 import com.umeng.socialize.UMShareAPI;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 	private String[] images = {"https://gd2.alicdn.com/imgextra/i1/2259324182/TB2sdjGm0BopuFjSZPcXXc9EpXa_!!2259324182.jpg",
 			"http://img4.tbcdn.cn/tfscom/i1/2259324182/TB2ISF_hKtTMeFjSZFOXXaTiVXa_!!2259324182.jpg",
 			"http://img2.tbcdn.cn/tfscom/i1/2259324182/TB2NAMmm00opuFjSZFxXXaDNVXa_!!2259324182.jpg"};
+	final ArrayList<String> imageList = new ArrayList<>();
 	private List<String> imgCache;
 	
 	@Override
@@ -54,7 +57,12 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 		
+		imageList.add("https://gd2.alicdn.com/imgextra/i1/2259324182/TB2sdjGm0BopuFjSZPcXXc9EpXa_!!2259324182.jpg");
+		imageList.add("http://img4.tbcdn.cn/tfscom/i1/2259324182/TB2ISF_hKtTMeFjSZFOXXaTiVXa_!!2259324182.jpg");
+		imageList.add("http://img2.tbcdn.cn/tfscom/i1/2259324182/TB2NAMmm00opuFjSZFxXXaDNVXa_!!2259324182.jpg");
+		
 		observeShare1();
+		observeShare2();
 	}
 	
 	private void requestPermission() {
@@ -144,6 +152,15 @@ public class MainActivity extends AppCompatActivity {
 				new ShareUtils(MainActivity.this)
 						.setUri(uris)
 						.showShareBoard(shareBoard);
+			}
+		});
+	}
+	
+	private void observeShare2() {
+		findViewById(R.id.btnShareDialog2).setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				ShareDialog.showMultiImageShare(MainActivity.this, imageList).show();
 			}
 		});
 	}

@@ -36,4 +36,12 @@
 		android:layout_height="wrap_content"
 		android:text="多图分享"
 		app:layout_constraintTop_toBottomOf="@+id/btnShare"/>
+	
+	<Button
+		android:id="@+id/btnShareDialog2"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="多图分享2"
+		app:layout_constraintBaseline_toBaselineOf="@+id/btnShareDialog"
+		app:layout_constraintLeft_toRightOf="@+id/btnShareDialog"/>
 </android.support.constraint.ConstraintLayout>

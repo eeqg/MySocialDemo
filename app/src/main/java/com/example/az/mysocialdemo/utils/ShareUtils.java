@@ -133,7 +133,7 @@ public class ShareUtils {
 	/**
 	 * 拉起微信朋友圈发送多张图片
 	 */
-	private void shareweipyqSomeImg(Context context, Uri[] uri) {
+	public void shareweipyqSomeImg(Context context, Uri[] uri) {
 		Intent shareIntent = new Intent();
 		//1调用系统分析
 		shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
@@ -159,7 +159,7 @@ public class ShareUtils {
 	/**
 	 * 拉起微信发送多张图片给好友
 	 */
-	private void shareWXSomeImg(Context context, Uri[] uri) {
+	public void shareWXSomeImg(Context context, Uri[] uri) {
 		LogUtils.d("-----uri : " + uri);
 		Intent shareIntent = new Intent();
 		//1调用系统分析
